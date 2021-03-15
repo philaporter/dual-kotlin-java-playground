@@ -2,18 +2,18 @@
 
 package com.philaporter
 
+import com.philaporter.domain.Account
 import com.philaporter.domain.Transaction
 import kotlinx.coroutines.*
 import java.time.Instant
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.TimeoutException
-import kotlin.random.Random
+import java.util.concurrent.ConcurrentHashMap
 
-fun runAsync(x: Transaction): CompletableFuture<Boolean> {
+fun runAsync(x: Transaction, chm: ConcurrentHashMap<String, Account>): CompletableFuture<Boolean> {
     var future = CompletableFuture<Boolean>()
     CoroutineScope(Dispatchers.IO).async {
         try {
-            work(x)
+            work(x, chm)
             future.complete(true)
         } catch (e: TimeoutCancellationException) {
             future.completeExceptionally(e)
@@ -22,16 +22,23 @@ fun runAsync(x: Transaction): CompletableFuture<Boolean> {
     return future
 }
 
-suspend fun work(x: Transaction) = withContext(Dispatchers.IO) {
+suspend fun work(t: Transaction, chm: ConcurrentHashMap<String, Account>) = withContext(Dispatchers.IO) {
     withTimeout(3000) {
 
+        var account: Account
         while (true) {
-            if (Random.nextInt(25) == x.id.toInt()) {
-                println("${coroutineContext[Job]} for $x is working in ${Thread.currentThread().name} in " +
-                        "${Thread.currentThread().threadGroup} at " + Instant.now())
+
+            account = chm.get(t.accountId)!!
+            if (account.lock()) {
+                println(
+                    "${coroutineContext[Job]} for $t is working in ${Thread.currentThread().name} in " +
+                            "${Thread.currentThread().threadGroup} at ${Instant.now()}"
+                )
+                account.increaseTotalSpend(t.amount)
+                account.unlock()
                 break;
             } else {
-                println("${coroutineContext[Job]} for $x is waiting")
+                println("${coroutineContext[Job]} for $t is waiting")
                 delay(100)
             }
         }

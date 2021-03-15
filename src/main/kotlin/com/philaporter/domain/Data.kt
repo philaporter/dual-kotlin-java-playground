@@ -1,11 +1,21 @@
 package com.philaporter.domain
 
-data class Transaction(val id: String, val amount: Double)
+import java.util.concurrent.atomic.AtomicBoolean
 
-class Account(val accountId: String, var totalSpend: Double) {
+data class Transaction(val id: String, val accountId: String, val amount: Double)
 
-    fun increaseTotalSpend(a : Double) {
+class Account(val accountId: String, var totalSpend: Double, var locked: AtomicBoolean) {
+
+    fun increaseTotalSpend(a: Double) {
         totalSpend += a;
+    }
+
+    fun lock(): Boolean {
+        return locked.compareAndSet(false, true)
+    }
+
+    fun unlock(): Boolean {
+        return locked.compareAndSet(true, false)
     }
 
     override fun equals(other: Any?): Boolean {
