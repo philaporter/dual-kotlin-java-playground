@@ -52,8 +52,6 @@ public class Application {
         Thread.sleep(5000);
 
         System.out.println("Check the totals:");
-        chm.forEachValue(4, account -> {
-            System.out.println(account.getAccountId() + " ::: $" + account.getTotalSpend());
-        });
+        chm.forEachValue(4, System.out::println);
     }
 }
