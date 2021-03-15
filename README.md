@@ -1,6 +1,10 @@
 ### Kotlin playground
 
-I've finally realized that Kotlin is better than Java at basically everything, so I guess it's time to learn how to Kotlin.
+Motivation: I finally realized that Kotlin is better than Java at basically everything, so I guess it's time to learn 
+how to Kotlin.
+
+This application attempts (succeeds?) at leveraging suspendable functions and coroutines in tandem with a main Java 
+process that asynchronously processes CompletableFuture objects returned by the coroutines.
 
 ### Requirements
 ```
