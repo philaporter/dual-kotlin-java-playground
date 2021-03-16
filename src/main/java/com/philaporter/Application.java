@@ -24,7 +24,7 @@ public class Application {
         }
 
         // Simulate incoming transactions
-        for (int i = 0, ai = 0; i < 1000; i++, ai++) {
+        for (int i = 0, ai = 0; i < 10000; i++, ai++) {
 
             // Make each account id predictable w/ round robin assignment
             if (ai > 4) ai = 0;
@@ -48,10 +48,16 @@ public class Application {
             });
         }
 
-        System.out.println("Sleeping for 5 seconds and then printing the totals");
-        Thread.sleep(5000);
-
-        System.out.println("Check the totals:");
-        chm.forEachValue(4, System.out::println);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                System.out.println("Graceful shutdown started; letting in flight transactions process");
+                Thread.sleep(5000);
+                System.out.println("Check the totals:");
+                chm.forEachValue(4, System.out::println);
+                System.out.println("Exiting");
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
+        }));
     }
 }

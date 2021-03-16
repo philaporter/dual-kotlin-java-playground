@@ -23,7 +23,7 @@ fun runAsync(x: Transaction, chm: ConcurrentHashMap<String, Account>): Completab
 }
 
 suspend fun work(t: Transaction, chm: ConcurrentHashMap<String, Account>) = withContext(Dispatchers.IO) {
-    withTimeout(3000) {
+    withTimeout(6000) {
 
         var account: Account
         while (true) {
