@@ -51,10 +51,11 @@ public class Application {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 System.out.println("Graceful shutdown started; letting in flight transactions process");
-                Thread.sleep(6000);
+                Thread.sleep(10000);
+                System.out.println("===============================================");
                 System.out.println("Check the totals:");
                 chm.forEachValue(4, System.out::println);
-                System.out.println("Exiting");
+                System.out.println("===============================================");
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }
