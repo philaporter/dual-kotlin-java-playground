@@ -51,7 +51,7 @@ public class Application {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 System.out.println("Graceful shutdown started; letting in flight transactions process");
-                Thread.sleep(5000);
+                Thread.sleep(6000);
                 System.out.println("Check the totals:");
                 chm.forEachValue(4, System.out::println);
                 System.out.println("Exiting");
